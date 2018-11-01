@@ -102,3 +102,9 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+#other
+.pyvenv.cfg
+.pip-selfcheck.json
+.gitignore.txt
+
