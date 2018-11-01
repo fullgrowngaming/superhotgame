@@ -6,6 +6,8 @@ pygame.init()
 player = Player(50,50)
 window = GameWindow(240, 135)
 clock = pygame.time.Clock()
+test = pygame.sprite.Group()
+test.add(player)
 
 def update():
     window.display()
@@ -15,7 +17,7 @@ def game_loop():
     running = True
     while running:
         window.window.fill(GameWindow.white)
-
+        print (test.sprites())
         #handle quit
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

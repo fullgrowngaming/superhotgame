@@ -1,7 +1,7 @@
 import pygame
 from GameWindow import GameWindow
 
-class Player():
+class Player(pygame.sprite.Sprite):
     walk_south = [pygame.image.load('Game/p_run/Player_South_Run_000%s.png' % frame) for frame in range(1, 6)]
     walk_north = [pygame.image.load('Game/p_run/Player_North_Run_000%s.png' % frame) for frame in range(1, 6)]
     walk_east = [pygame.image.load('Game/p_run/Player_East_Run_000%s.png' % frame) for frame in range(1, 6)]
@@ -9,12 +9,16 @@ class Player():
     idle = [pygame.image.load('Game/p_idle/idle_%s.png' % direction) for direction in 'nesw']
 
     def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
         self.x, self.y = x, y
         self.width, self.height = 48, 48
         self.walk_count = 0
         self.previous_direction = 1
         self.direction = 2
         self.speed = 1
+
+    def add(self):
+        pygame.sprite.Group.add(self)
 
     def move(self):
         if self.direction == 2:
