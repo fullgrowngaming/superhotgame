@@ -1,10 +1,10 @@
 import pygame, time, sys, random
-pygame.init()
 from GameWindow import GameWindow
 from Player import Player
 
+pygame.init()
 player = Player(50,50)
-window = GameWindow(1056, 768)
+window = GameWindow(240, 135)
 clock = pygame.time.Clock()
 
 def update():
@@ -15,7 +15,6 @@ def game_loop():
     running = True
     while running:
         window.window.fill(GameWindow.white)
-        level.draw(window)
 
         #handle quit
         for event in pygame.event.get():
