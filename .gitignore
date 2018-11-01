@@ -107,6 +107,6 @@ venv.bak/
 .pyvenv.cfg
 .pip-selfcheck.json
 .gitignore.txt
-Scripts/*
-Include/*
+scripts/
+include/
 
