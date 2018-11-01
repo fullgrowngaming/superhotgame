@@ -11,8 +11,6 @@ def update():
     window.display()
     clock.tick(60)
 
-    test
-
 def game_loop():
     running = True
     while running:
