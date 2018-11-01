@@ -31,23 +31,23 @@ class Player():
             self.walk_count = 0
 
         if self.direction == 4:
-            GameWindow.window.blit(Player.idle[self.previous_direction], (self.x, self.y))
+            GameWindow.draw(Player.idle[self.previous_direction], (self.x, self.y))
             self.walk_count = 0
 
         elif self.direction == 0:
-            GameWindow.window.blit(Player.walk_north[self.walk_count // 6], (self.x, self.y))
+            GameWindow.draw(Player.walk_north[self.walk_count // 6], (self.x, self.y))
             self.walk_count += 1
 
         elif self.direction == 1:
-            GameWindow.window.blit(Player.walk_east[self.walk_count // 6], (self.x, self.y))
+            GameWindow.draw(Player.walk_east[self.walk_count // 6], (self.x, self.y))
             self.walk_count += 1
 
         elif self.direction == 2:
-            GameWindow.window.blit(Player.walk_south[self.walk_count // 6], (self.x, self.y))
+            GameWindow.draw(Player.walk_south[self.walk_count // 6], (self.x, self.y))
             self.walk_count += 1
 
         elif self.direction == 3:
-            GameWindow.window.blit(Player.walk_west[self.walk_count // 6], (self.x, self.y))
+            GameWindow.draw(Player.walk_west[self.walk_count // 6], (self.x, self.y))
             self.walk_count += 1
 
 
