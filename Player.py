@@ -13,32 +13,35 @@ class Player(pygame.sprite.Sprite):
         self.x, self.y = x, y
         self.width, self.height = 48, 48
         self.walk_count = 0
-        self.previous_direction = 1
+        #self.previous_direction = 1
         self.direction = 2
         self.speed = 1
 
     def add(self):
         pygame.sprite.Group.add(self)
 
-    def move(self):
-        if self.direction == 2:
+    def move(self, direction):
+        if direction == 2:
+            self.direction = 2
             self.y += self.speed
-        if self.direction == 0:
+
+        if direction == 0:
+            self.direction = 0
             self.y -= self.speed
-        if self.direction == 1:
+
+        if direction == 1:
+            self.direction = 1
             self.x += self.speed
-        if self.direction == 3:
+
+        if direction == 3:
+            self.direction = 3
             self.x -= self.speed
 
     def draw(self, GameWindow):
         if self.walk_count + 1 >= 30:
             self.walk_count = 0
 
-        if self.direction == 4:
-            GameWindow.draw(Player.idle[self.previous_direction], (self.x, self.y))
-            self.walk_count = 0
-
-        elif self.direction == 0:
+        if self.direction == 0:
             GameWindow.draw(Player.walk_north[self.walk_count // 6], (self.x, self.y))
             self.walk_count += 1
 
