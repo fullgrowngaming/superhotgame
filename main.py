@@ -1,11 +1,13 @@
 import pygame, time, sys, random
 from GameWindow import GameWindow
 from Player import Player
+from Renderer import Renderer
 
 pygame.init()
 player = Player(50,50)
 window = GameWindow(240, 135)
 clock = pygame.time.Clock()
+renderer = Renderer()
 
 def update():
     window.display()
@@ -15,6 +17,7 @@ def game_loop():
     running = True
     while running:
         window.window.fill(GameWindow.white)
+
         #handle quit
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -31,11 +34,12 @@ def game_loop():
             player.move(0)
         elif pressed[pygame.K_DOWN]:
             player.move(2)
-        else:                     #if you aren't holding anything, i.e. if you aren't moving anymore
+        else:                     #if you stop moving (i.e. not holding a direction)
             player.walk_count = 0 #reset walking animation
 
-        #update screen and tick
-        player.draw(window)
+        #draw sprites and update window
+        renderer.sprites_list.add(player)
+        renderer.draw(window)
         update()
 
 if __name__ == "__main__":
