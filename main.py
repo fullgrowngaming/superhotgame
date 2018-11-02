@@ -7,7 +7,7 @@ pygame.init()
 player = Player(50,50)
 window = GameWindow(240, 135)
 clock = pygame.time.Clock()
-renderer = Renderer()
+renderer = Renderer(window)
 renderer.sprites_list.add(player)
 
 def update():
@@ -41,7 +41,7 @@ def game_loop():
             player.walk_count = 0 #reset walking animation
 
         #draw sprites and update window
-        renderer.draw(window)
+        renderer.draw()
         update()
 
 if __name__ == "__main__":
