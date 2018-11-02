@@ -7,5 +7,5 @@ class Renderer():
         self.sprites_list = pygame.sprite.LayeredUpdates()
 
     def draw(self, GameWindow):
-        for sprite in self.sprites:
+        for sprite in self.sprites_list:
             GameWindow.window.blit(sprite.current_frame, (sprite.x, sprite.y))

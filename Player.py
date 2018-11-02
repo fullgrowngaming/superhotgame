@@ -44,6 +44,9 @@ class Player(pygame.sprite.Sprite):
             self.current_frame = (Player.walk_west[self.walk_count // 6])
             self.walk_count += 1
 
+        if direction == 4:
+            self.current_frame = (Player.idle[self.direction])
+
 
 
 

@@ -12,6 +12,7 @@ renderer = Renderer()
 def update():
     window.display()
     clock.tick(60)
+    print(f'x, y: {player.x},{player.y} | Direction: {player.direction}')
 
 def game_loop():
     running = True
@@ -34,7 +35,8 @@ def game_loop():
             player.move(0)
         elif pressed[pygame.K_DOWN]:
             player.move(2)
-        else:                     #if you stop moving (i.e. not holding a direction)
+        else:
+            player.move(4)  #if you stop moving (i.e. not holding a direction)
             player.walk_count = 0 #reset walking animation
 
         #draw sprites and update window
