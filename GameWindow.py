@@ -14,6 +14,3 @@ class GameWindow:
 
     def display(self):
         pygame.display.update()
-
-    def draw(self, image, position):
-        self.window.blit(image, position)
