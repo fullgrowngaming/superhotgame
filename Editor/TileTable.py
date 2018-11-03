@@ -14,12 +14,10 @@ class TileTable(object):
         self.tile_count_y = image_height // tile_height
 
         for tile_x in range(0, self.tile_count_x):
-            row = []
-            self.tiles.append(row)
             for tile_y in range(0, self.tile_count_y):
                 frame = (tile_x*tile_width, tile_y*tile_height, tile_height,
                          tile_width)
                 tile = image.subsurface(frame)
-                row.append(tile)
+                self.tiles.append(tile)
         return
 
