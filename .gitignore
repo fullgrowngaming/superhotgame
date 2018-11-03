@@ -112,3 +112,5 @@ include/
 
 pip-selfcheck.json
 pyvenv.cfg
+
+.idea

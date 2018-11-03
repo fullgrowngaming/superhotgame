@@ -1,7 +1,6 @@
 import pygame
 
-
-class GameWindow:
+class EditorWindow:
     '''Creates and maintains the game window'''
     white = (255,255,255)
 
@@ -9,8 +8,8 @@ class GameWindow:
         self.res_x = window_res_x
         self.res_y = window_res_y
         self.window = pygame.display.set_mode((window_res_x, window_res_y))
-        self.window.fill(GameWindow.white)
-        pygame.display.set_caption('UNTITLED GAME WITH 32')
+        self.window.fill(EditorWindow.white)
+        pygame.display.set_caption('Level Editor Util')
         self.display()
 
     def display(self):

@@ -1,5 +1,5 @@
 import pygame
-from GameWindow import GameWindow
+
 
 class Renderer():
     def __init__(self, GameWindow):
