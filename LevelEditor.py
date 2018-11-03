@@ -12,7 +12,7 @@ player = Player(50,50)
 clock = pygame.time.Clock()
 room1 = Room('Levels/level.json')
 renderer = Renderer(window)
-renderer.sprites_list.add(player)
+renderer.sprites_list.add(player) 
 
 def update():
     window.display()
