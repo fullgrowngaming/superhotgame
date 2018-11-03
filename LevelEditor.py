@@ -2,13 +2,17 @@ import pygame, time, sys, random
 from GameWindow import GameWindow
 from Player import Player
 from Editor.Room import Room
+from Renderer import Renderer
 
 import json
 
 pygame.init()
 window = GameWindow(240, 135)
+player = Player(50,50)
 clock = pygame.time.Clock()
 room1 = Room('Levels/level.json')
+renderer = Renderer(window)
+renderer.sprites_list.add(player)
 
 def update():
     window.display()
@@ -33,6 +37,22 @@ def game_loop():
                     yloc = y * room1.sprite_sheet.tile_height
                     window.window.blit(tile, (xloc, yloc))
 
+        # handles keypresses and moves the player
+        pressed = pygame.key.get_pressed()
+        if pressed[pygame.K_LEFT]:
+            player.move(3)
+        elif pressed[pygame.K_RIGHT]:
+            player.move(1)
+        elif pressed[pygame.K_UP]:
+            player.move(0)
+        elif pressed[pygame.K_DOWN]:
+            player.move(2)
+        else:
+            player.move(4)  # if you stop moving (i.e. not holding a direction)
+            player.walk_count = 0  # reset walking animation
+
+        # draw sprites and update window
+        renderer.draw()
         update()
 
 
