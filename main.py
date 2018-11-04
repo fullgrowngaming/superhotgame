@@ -1,6 +1,6 @@
 import pygame, time, sys, random
 from GameWindow import GameWindow
-from Player import Player
+from Player import *
 from Editor.Room import Room
 from Renderer import Renderer
 
@@ -9,14 +9,16 @@ import json
 pygame.init()
 window = GameWindow(240, 135)
 player = Player(50,50)
+effect = Effect(player)
 clock = pygame.time.Clock()
 room1 = Room('Levels/level.json')
 renderer = Renderer(window)
-renderer.all_sprites.add(player)
+renderer.all_sprites.add(player, player.sword, player.shield, effect)
 
 def update():
     window.display()
     clock.tick(60)
+    print(player.attack_anim_timer, player.walking, player.direction)
 
 
 def game_loop():
@@ -51,10 +53,15 @@ def game_loop():
         elif pressed[pygame.K_DOWN]:
             player.move(2)
         else:
+            player.walking = False
             player.move(4)  # if you stop moving (i.e. not holding a direction)
 
         # draw sprites and update window
         player.update()
+        player.sword.update()
+        player.shield.update()
+        effect.update()
+
         renderer.draw()
         update()
 
