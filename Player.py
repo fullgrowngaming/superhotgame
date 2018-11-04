@@ -9,14 +9,10 @@ class Player(pygame.sprite.Sprite):
     walk_west = [pygame.image.load('Game/p_run_2/Player_West_Run_000%s.png' % frame) for frame in range(1, 6)]
     idle = [pygame.image.load('Game/p_idle/idle_%s.png' % direction) for direction in 'nesw']
 
-    att_south = [pygame.image.load('Game/p_attack/Player_South_Attack_000%s.png' % frame) for frame in range(1, 4)]
-    att_south.reverse()
-    att_north = [pygame.image.load('Game/p_attack/Player_North_Attack_000%s.png' % frame) for frame in range(1, 4)]
-    att_north.reverse()
-    att_east = [pygame.image.load('Game/p_attack/Player_East_Attack_000%s.png' % frame) for frame in range(1, 4)]
-    att_east.reverse()
-    att_west = [pygame.image.load('Game/p_attack/Player_West_Attack_000%s.png' % frame) for frame in range(1, 4)]
-    att_west.reverse()
+    att_south = [pygame.image.load('Game/p_attack/Player_South_Attack_000%s.png' % frame) for frame in reversed(range(1,4))]
+    att_north = [pygame.image.load('Game/p_attack/Player_North_Attack_000%s.png' % frame) for frame in reversed(range(1,4))]
+    att_east = [pygame.image.load('Game/p_attack/Player_East_Attack_000%s.png' % frame) for frame in reversed(range(1,4))]
+    att_west = [pygame.image.load('Game/p_attack/Player_West_Attack_000%s.png' % frame) for frame in reversed(range(1,4))]
 
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
@@ -47,10 +43,8 @@ class Player(pygame.sprite.Sprite):
         elif self.attack_anim_timer == 0:
             self.speed = 1
 
-
         if self.attack_cooldown > 0:
             self.attack_cooldown -= 1
-
 
     def attack(self):
         print('attack')
@@ -99,14 +93,10 @@ class Sword(pygame.sprite.Sprite):
     walk_east = [pygame.image.load('Game/p_run_2/Player_Sword_Normal_East_Run_000%s.png' % frame) for frame in range(1, 6)]
     walk_west = [pygame.image.load('Game/p_run_2/Player_Sword_Normal_West_Run_000%s.png' % frame) for frame in range(1, 6)]
 
-    att_south = [pygame.image.load('Game/p_attack/Player_Sword_Normal_South_Attack_000%s.png' % frame) for frame in range(1, 4)]
-    att_south.reverse()
-    att_north = [pygame.image.load('Game/p_attack/Player_Sword_Normal_North_Attack_000%s.png' % frame) for frame in range(1, 4)]
-    att_north.reverse()
-    att_east = [pygame.image.load('Game/p_attack/Player_Sword_Normal_East_Attack_000%s.png' % frame) for frame in range(1, 4)]
-    att_east.reverse()
-    att_west = [pygame.image.load('Game/p_attack/Player_Sword_Normal_West_Attack_000%s.png' % frame) for frame in range(1, 4)]
-    att_west.reverse()
+    att_south = [pygame.image.load('Game/p_attack/Player_Sword_Normal_South_Attack_000%s.png' % frame) for frame in reversed(range(1,4))]
+    att_north = [pygame.image.load('Game/p_attack/Player_Sword_Normal_North_Attack_000%s.png' % frame) for frame in reversed(range(1,4))]
+    att_east = [pygame.image.load('Game/p_attack/Player_Sword_Normal_East_Attack_000%s.png' % frame) for frame in reversed(range(1,4))]
+    att_west = [pygame.image.load('Game/p_attack/Player_Sword_Normal_West_Attack_000%s.png' % frame) for frame in reversed(range(1,4))]
 
     def __init__(self, Player):
         pygame.sprite.Sprite.__init__(self)
@@ -146,14 +136,10 @@ class Shield(pygame.sprite.Sprite):
     walk_east = [pygame.image.load('Game/p_run_2/Player_Shield_Normal_East_Run_000%s.png' % frame) for frame in range(1, 6)]
     walk_west = [pygame.image.load('Game/p_run_2/Player_Shield_Normal_West_Run_000%s.png' % frame) for frame in range(1, 6)]
 
-    att_south = [pygame.image.load('Game/p_attack/Player_Shield_Normal_South_Attack_000%s.png' % frame) for frame in
-                 range(1, 4)]
-    att_north = [pygame.image.load('Game/p_attack/Player_Shield_Normal_North_Attack_000%s.png' % frame) for frame in
-                 range(1, 4)]
-    att_east = [pygame.image.load('Game/p_attack/Player_Shield_Normal_East_Attack_000%s.png' % frame) for frame in
-                range(1, 4)]
-    att_west = [pygame.image.load('Game/p_attack/Player_Shield_Normal_West_Attack_000%s.png' % frame) for frame in
-                range(1, 4)]
+    att_south = [pygame.image.load('Game/p_attack/Player_Shield_Normal_South_Attack_000%s.png' % frame) for frame in reversed(range(1, 4))]
+    att_north = [pygame.image.load('Game/p_attack/Player_Shield_Normal_North_Attack_000%s.png' % frame) for frame in reversed(range(1, 4))]
+    att_east = [pygame.image.load('Game/p_attack/Player_Shield_Normal_East_Attack_000%s.png' % frame) for frame in reversed(range(1, 4))]
+    att_west = [pygame.image.load('Game/p_attack/Player_Shield_Normal_West_Attack_000%s.png' % frame) for frame in reversed(range(1, 4))]
 
     def __init__(self, Player):
         pygame.sprite.Sprite.__init__(self)
@@ -189,18 +175,10 @@ class Shield(pygame.sprite.Sprite):
 
 
 class Effect(pygame.sprite.Sprite):
-    att_south = [pygame.image.load('Game/p_attack/Player_Effect_Normal_South_Attack_000%s.png' % frame) for frame in
-                 range(1, 4)]
-    att_south.reverse()
-    att_north = [pygame.image.load('Game/p_attack/Player_Effect_Normal_North_Attack_000%s.png' % frame) for frame in
-                 range(1, 4)]
-    att_north.reverse()
-    att_east = [pygame.image.load('Game/p_attack/Player_Effect_Normal_East_Attack_000%s.png' % frame) for frame in
-                range(1, 4)]
-    att_east.reverse()
-    att_west = [pygame.image.load('Game/p_attack/Player_Effect_Normal_West_Attack_000%s.png' % frame) for frame in
-                range(1, 4)]
-    att_west.reverse()
+    att_south = [pygame.image.load('Game/p_attack/Player_Effect_Normal_South_Attack_000%s.png' % frame) for frame in reversed(range(1, 4))]
+    att_north = [pygame.image.load('Game/p_attack/Player_Effect_Normal_North_Attack_000%s.png' % frame) for frame in reversed(range(1, 4))]
+    att_east = [pygame.image.load('Game/p_attack/Player_Effect_Normal_East_Attack_000%s.png' % frame) for frame in reversed(range(1, 4))]
+    att_west = [pygame.image.load('Game/p_attack/Player_Effect_Normal_West_Attack_000%s.png' % frame) for frame in reversed(range(1, 4))]
 
     def __init__(self, Player):
         pygame.sprite.Sprite.__init__(self)
