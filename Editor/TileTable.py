@@ -4,12 +4,14 @@ import pygame.locals
 
 class TileTable(object):
     def __init__(self, file, tile_height, tile_width):
-        image = pygame.image.load(file).convert()
-        image_width, image_height = image.get_size()
-
+        self.file = file
         self.tiles = []
         self.tile_height = tile_height
         self.tile_width = tile_width
+
+        image = pygame.image.load(file).convert()
+        image_width, image_height = image.get_size()
+
         self.tile_count_x = image_width // tile_width
         self.tile_count_y = image_height // tile_height
 

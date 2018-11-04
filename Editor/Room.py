@@ -5,27 +5,39 @@ from Editor.TileTable import TileTable
 
 
 class Room(object):
-    def __init__(self, file):
-        self.file = file
+    def __init__(self, width, height, sprite_sheet, layers, **kwargs):
         self.layers = []
-        self.sprite_sheet = None
+        self.sprite_sheet = sprite_sheet
+        self.width = width
+        self.height = height
 
-        with codecs.open(self.file, encoding="utf-8-sig", mode="r") as f:
+        self.layers.extend(layers)
+
+        if "file" in kwargs.items():
+            self.file = kwargs["file"]
+        return
+
+    @classmethod
+    def Deserialize(cls, file):
+        with codecs.open(file, encoding="utf-8-sig", mode="r") as f:
             settings = json.load(f, encoding="utf-8")
 
-            self.spritesheetfile = settings['spritesheet']
-            self.width = settings['width']
-            self.height = settings['height']
+            width = settings['width']
+            height = settings['height']
 
-            self.sprite_sheet = TileTable(self.spritesheetfile, 24, 24)
+            spritesheetfile = settings['spritesheet']
+            sprite_sheet = TileTable(spritesheetfile, 24, 24)
+
+            layers = []
 
             for layer in settings['layers']:
-                self.layers.append(Layer.FromSettings(layer, self.sprite_sheet))
-        return
+                layers.append(Layer.FromSettings(layer, sprite_sheet))
+
+        return cls(width, height, sprite_sheet, layers, file=file)
 
     def Serialize(self):
         return {
-            "spritesheet": self.spritesheetfile,
+            "spritesheet": self.sprite_sheet.file,
             "width": self.width,
             "height": self.height,
             "layers": [layer.Serialize() for layer in self.layers]

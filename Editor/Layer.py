@@ -5,16 +5,23 @@ class Layer(object):
         self.zindex = zindex
         self.map = map
         self.tiles = []
+        self.tileTable = tileTable
 
         for y in range(0, len(map)):
             row = []
             self.tiles.append(row)
 
             for x in range(0, len(map[y])):
-                index = map[y][x]
-                tile = tileTable.tiles[index]
+                index = self.map[y][x]
+                tile = self.tileTable.tiles[index]
                 row.append(tile)
         return
+
+    def SetTile(self, x, y, tileIndex):
+        self.map[y][x] = tileIndex
+        tile = self.tileTable.tiles[tileIndex]
+        self.tiles[y][x] = tile
+        print(f"Set {x,y} to tile {tileIndex}")
 
     def Serialize(self):
         return {
