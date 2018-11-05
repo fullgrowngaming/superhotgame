@@ -15,10 +15,10 @@ class Player(pygame.sprite.Sprite):
     att_east = [pygame.image.load('Game/p_attack/Player_East_Attack_000%s.png' % frame) for frame in reversed(range(0,4))]
     att_west = [pygame.image.load('Game/p_attack/Player_West_Attack_000%s.png' % frame) for frame in reversed(range(0,4))]
 
-    def_south = [pygame.image.load('Game/p_defend/Player_South_Defend_000%s.png' % frame) for frame in range(0,2)]
-    def_north = [pygame.image.load('Game/p_defend/Player_North_Defend_000%s.png' % frame) for frame in range(0,2)]
-    def_east = [pygame.image.load('Game/p_defend/Player_East_Defend_000%s.png' % frame) for frame in range(0,2)]
-    def_west = [pygame.image.load('Game/p_defend/Player_West_Defend_000%s.png' % frame) for frame in range(0,2)]
+    def_south = [pygame.image.load('Game/p_defend/Player_South_Defend_000%s.png' % frame) for frame in reversed(range(0,2))]
+    def_north = [pygame.image.load('Game/p_defend/Player_North_Defend_000%s.png' % frame) for frame in reversed(range(0,2))]
+    def_east = [pygame.image.load('Game/p_defend/Player_East_Defend_000%s.png' % frame) for frame in reversed(range(0,2))]
+    def_west = [pygame.image.load('Game/p_defend/Player_West_Defend_000%s.png' % frame) for frame in reversed(range(0,2))]
 
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
@@ -26,17 +26,24 @@ class Player(pygame.sprite.Sprite):
         self.width, self.height = 48, 48
         self.image = (Player.idle[1])
         self.walk_count = 0
+        self.direction = 2
+
         self.attack_anim_timer = 0
         self.attack_cooldown = 0
-        self.direction = 2
+
+        self.defend_anim_timer = 0
+
         self.walking = False
         self.defending = False
+        self.attacking = False
+
         self.speed = 1
         self.sword = Sword(self)
         self.shield = Shield(self)
 
     def update(self):
         if self.attack_anim_timer > 0:
+            self.attacking = True
             self.attack_anim_timer -= 1
             if self.direction == 0:
                 self.image = (Player.att_north[self.attack_anim_timer // 6])
@@ -49,31 +56,36 @@ class Player(pygame.sprite.Sprite):
 
         elif self.attack_anim_timer == 0:
             self.speed = 1
+            self.attacking = False
 
         if self.attack_cooldown > 0:
             self.attack_cooldown -= 1
 
-        if self.defending:
+        if self.defend_anim_timer > 0:
+            self.defend_anim_timer -= 1
             if self.direction == 0:
-                self.image = (Player.def_north[1])
+                self.image = (Player.def_north[self.defend_anim_timer // 6])
             if self.direction == 1:
-                self.image = (Player.def_east[1])
+                self.image = (Player.def_east[self.defend_anim_timer // 6])
             if self.direction == 2:
-                self.image = (Player.def_south[1])
+                self.image = (Player.def_south[self.defend_anim_timer // 6])
             if self.direction == 3:
-                self.image = (Player.def_west[1])
+                self.image = (Player.def_west[self.defend_anim_timer // 6])
 
     def attack(self):
-        print('attack')
-        self.speed = 0
-        self.walking = False
-        self.attack_cooldown = 60
-        self.attack_anim_timer = 17
+        if not self.attacking:
+            self.attacking = True
+            self.walking = False
+            self.speed = 0
+            self.attack_cooldown = 30
+            self.attack_anim_timer = 17
 
     def defend(self):
-        self.speed = 0
-        self.walking = False
-        self.defending = True
+        if not self.defending:
+            self.defending = True
+            self.walking = False
+            self.speed = 0
+            self.defend_anim_timer = 12
 
     def move(self, direction):
         self.walking = True
@@ -110,6 +122,8 @@ class Player(pygame.sprite.Sprite):
             self.walking = False
 
 class Sword(pygame.sprite.Sprite):
+    idle = [pygame.image.load('Game/p_idle/Player_Sword_Normal_%s_Idle_0000.png' % direction) for direction in 'nesw']
+
     walk_south = [pygame.image.load('Game/p_run_2/Player_Sword_Normal_South_Run_000%s.png' % frame) for frame in range(0, 6)]
     walk_north = [pygame.image.load('Game/p_run_2/Player_Sword_Normal_North_Run_000%s.png' % frame) for frame in range(0, 6)]
     walk_east = [pygame.image.load('Game/p_run_2/Player_Sword_Normal_East_Run_000%s.png' % frame) for frame in range(0, 6)]
@@ -147,7 +161,7 @@ class Sword(pygame.sprite.Sprite):
                 self.image = (Sword.att_west[self.player.attack_anim_timer // 6])
 
         elif self.player.walking == False:
-            self.image = test
+            self.image = Sword.idle[self.player.direction]
         elif self.player.direction == 0:
             self.image = (Sword.walk_north[self.player.walk_count // 6])
         elif self.player.direction == 1:
@@ -159,16 +173,18 @@ class Sword(pygame.sprite.Sprite):
 
         if self.player.defending:
             if self.player.direction == 0:
-                self.image = (Sword.def_north[1])
+                self.image = (Sword.def_north[self.player.defend_anim_timer // 6])
             elif self.player.direction == 1:
-                self.image = (Sword.def_east[1])
+                self.image = (Sword.def_east[self.player.defend_anim_timer // 6])
             elif self.player.direction == 2:
-                self.image = (Sword.def_south[1])
+                self.image = (Sword.def_south[self.player.defend_anim_timer // 6])
             elif self.player.direction == 3:
-                self.image = (Sword.def_west[1])
+                self.image = (Sword.def_west[self.player.defend_anim_timer // 6])
 
 
 class Shield(pygame.sprite.Sprite):
+    idle = [pygame.image.load('Game/p_idle/Player_Shield_Normal_%s_Idle_0000.png' % direction) for direction in 'nesw']
+
     walk_south = [pygame.image.load('Game/p_run_2/Player_Shield_Normal_South_Run_000%s.png' % frame) for frame in range(0, 6)]
     walk_north = [pygame.image.load('Game/p_run_2/Player_Shield_Normal_North_Run_000%s.png' % frame) for frame in range(0, 6)]
     walk_east = [pygame.image.load('Game/p_run_2/Player_Shield_Normal_East_Run_000%s.png' % frame) for frame in range(0, 6)]
@@ -206,7 +222,7 @@ class Shield(pygame.sprite.Sprite):
                 self.image = (Shield.att_west[self.player.attack_anim_timer // 6])
 
         elif self.player.walking == False:
-            self.image = test
+            self.image = Shield.idle[self.player.direction]
         elif self.player.direction == 0:
             self.image = (Shield.walk_north[self.player.walk_count // 6])
         elif self.player.direction == 1:
@@ -218,15 +234,13 @@ class Shield(pygame.sprite.Sprite):
 
         if self.player.defending:
             if self.player.direction == 0:
-                self.image = (Shield.def_north[1])
+                self.image = (Shield.def_north[self.player.defend_anim_timer // 6])
             elif self.player.direction == 1:
-                self.image = (Shield.def_east[1])
+                self.image = (Shield.def_east[self.player.defend_anim_timer // 6])
             elif self.player.direction == 2:
-                self.image = (Shield.def_south[1])
+                self.image = (Shield.def_south[self.player.defend_anim_timer // 6])
             elif self.player.direction == 3:
-                self.image = (Shield.def_west[1])
-
-
+                self.image = (Shield.def_west[self.player.defend_anim_timer // 6])
 
 
 class Effect(pygame.sprite.Sprite):
