@@ -18,7 +18,7 @@ renderer.all_sprites.add(player, player.sword, player.shield, effect)
 def update():
     window.display()
     clock.tick(60)
-    print(player.attack_anim_timer, player.walking, player.direction)
+    print(player.attack_anim_timer, player.walking, player.direction, player.defending)
 
 
 def game_loop():
@@ -44,16 +44,23 @@ def game_loop():
         pressed = pygame.key.get_pressed()
         if pressed[pygame.K_SPACE] and player.attack_cooldown == 0:
             player.attack()
+        if pressed[pygame.K_LSHIFT]:
+            player.defend()
         elif pressed[pygame.K_LEFT]:
+            player.defending = False
             player.move(3)
         elif pressed[pygame.K_RIGHT]:
+            player.defending = False
             player.move(1)
         elif pressed[pygame.K_UP]:
+            player.defending = False
             player.move(0)
         elif pressed[pygame.K_DOWN]:
+            player.defending = False
             player.move(2)
         else:
             player.walking = False
+            player.defending = False
             player.move(4)  # if you stop moving (i.e. not holding a direction)
 
         # draw sprites and update window
