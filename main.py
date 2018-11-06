@@ -22,7 +22,7 @@ def update():
     window.display()
     clock.tick(60)
     #print(player.attack_anim_timer, player.walking, player.direction, player.defending, player.attacking)
-    print(f'Camera X,Y: {camera.rect.x},{camera.rect.y} | X,Y: {player.rect.left},{player.rect.right}')
+    print(f'Camera X,Y: {camera.rect.x},{camera.rect.y} | X,Y: {player.rect.x},{player.rect.y}')
 
 
 def game_loop():
