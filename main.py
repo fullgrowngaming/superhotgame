@@ -22,6 +22,7 @@ def update():
     window.display()
     clock.tick(60)
     #print(player.attack_anim_timer, player.walking, player.direction, player.defending, player.attacking)
+    print(f'Camera X,Y: {camera.rect.x},{camera.rect.y} | X,Y: {player.rect.x},{player.rect.y}')
 
 
 def game_loop():
@@ -40,7 +41,6 @@ def game_loop():
                 for y in range(0, 6):
                     x_1 = x + (10 * camera.rect.x)
                     y_1 = y + (6 * camera.rect.y)
-                    print(f'Camera X,Y: {camera.rect.x},{camera.rect.y} | X,Y: {x_1},{y_1}')
                     tile = layer.tiles[y_1][x_1]
                     xloc = x * room1.sprite_sheet.tile_width
                     yloc = y * room1.sprite_sheet.tile_height
@@ -63,6 +63,15 @@ def game_loop():
         else:
             player.walking = False
             player.move(4)  # if you stop moving (i.e. not holding a direction)
+
+        if player.rect.right > win_x:
+            camera.rect.x += 1
+            player.rect.left = 0
+
+        elif player.rect.left < 0:
+            camera.rect.x -= 1
+            player.rect.right = win_x
+
 
         # draw sprites and update window
         renderer.all_sprites.update()
