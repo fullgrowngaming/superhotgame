@@ -22,9 +22,11 @@ class Player(pygame.sprite.Sprite):
 
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.x, self.y = x, y
-        self.width, self.height = 48, 48
         self.image = (Player.idle[1])
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
         self.walk_count = 0
         self.direction = 2
 
@@ -38,6 +40,7 @@ class Player(pygame.sprite.Sprite):
         self.attacking = False
 
         self.speed = 1
+
         self.sword = Sword(self)
         self.shield = Shield(self)
 
@@ -89,30 +92,31 @@ class Player(pygame.sprite.Sprite):
 
     def move(self, direction):
         self.walking = True
+        self.defending = False
         if self.walk_count + 1 >= 30:
             self.walk_count = 0
 
         if direction == 0:
             self.direction = 0
-            self.y -= self.speed
+            self.rect.y -= self.speed
             self.image = (Player.walk_north[self.walk_count // 6])
             self.walk_count += 1
 
         if direction == 1:
             self.direction = 1
-            self.x += self.speed
+            self.rect.x += self.speed
             self.image = (Player.walk_east[self.walk_count // 6])
             self.walk_count += 1
 
         if direction == 2:
             self.direction = 2
-            self.y += self.speed
+            self.rect.y += self.speed
             self.image = (Player.walk_south[self.walk_count // 6])
             self.walk_count += 1
 
         if direction == 3:
             self.direction = 3
-            self.x -= self.speed
+            self.rect.x -= self.speed
             self.image = (Player.walk_west[self.walk_count // 6])
             self.walk_count += 1
 
@@ -142,13 +146,14 @@ class Sword(pygame.sprite.Sprite):
     def __init__(self, Player):
         pygame.sprite.Sprite.__init__(self)
         self.image = self.walk_south[0]
+        self.rect = self.image.get_rect()
         self.player = Player
-        self.x = Player.x
-        self.y = Player.y
+        self.rect.x = Player.rect.x
+        self.rect.y = Player.rect.y
 
     def update(self):
-        self.x = self.player.x
-        self.y = self.player.y
+        self.rect.x = self.player.rect.x
+        self.rect.y = self.player.rect.y
 
         if self.player.attack_anim_timer > 0:
             if self.player.direction == 0:
@@ -203,13 +208,14 @@ class Shield(pygame.sprite.Sprite):
     def __init__(self, Player):
         pygame.sprite.Sprite.__init__(self)
         self.image = self.walk_south[0]
+        self.rect = self.image.get_rect()
         self.player = Player
-        self.x = Player.x
-        self.y = Player.y
+        self.rect.x = Player.rect.x
+        self.rect.y = Player.rect.y
 
     def update(self):
-        self.x = self.player.x
-        self.y = self.player.y
+        self.rect.x = self.player.rect.x
+        self.rect.y = self.player.rect.y
 
         if self.player.attack_anim_timer > 0:
             if self.player.direction == 0:
@@ -252,13 +258,14 @@ class Effect(pygame.sprite.Sprite):
     def __init__(self, Player):
         pygame.sprite.Sprite.__init__(self)
         self.image = self.att_north[0]
+        self.rect = self.image.get_rect()
         self.player = Player
-        self.x = Player.x
-        self.y = Player.y
+        self.rect.x = Player.rect.x
+        self.rect.y = Player.rect.y
 
     def update(self):
-        self.x = self.player.x
-        self.y = self.player.y
+        self.rect.x = self.player.rect.x
+        self.rect.y = self.player.rect.y
 
         if self.player.attack_anim_timer > 0:
             if self.player.direction == 0:
