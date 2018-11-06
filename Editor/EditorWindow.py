@@ -8,18 +8,18 @@ class EditorWindow:
     '''Creates and maintains the game window'''
     white = (255,255,255)
 
-    def __init__(self, window_res_x, window_res_y):
+    def __init__(self, window_res_x, window_res_y, viewModel):
         self.res_x = window_res_x
         self.res_y = window_res_y
 
         self.root = tk.Tk()
-        self.tilePalette = TilePalette(self.root, width=200, height=300)
-        self.tilePalette.grid(row=0, column=1)
+        self.tilePalette = TilePalette(self.root, viewModel, width=80)
+        self.tilePalette.pack(side=RIGHT)
 
-        embed = tk.Frame(self.root, width=240,
-                         height=144)  # creates embed frame for pygame
-        embed.grid(columnspan=600, rowspan=500)  # Adds grid
-        #embed.pack(side=LEFT)  # packs window to the left
+        embed = tk.Frame(self.root, width=240, height=144)  # creates embed
+        # frame for pygame
+        #embed.grid(columnspan=600, rowspan=500)  # Adds grid
+        embed.pack(side=LEFT)  # packs window to the left
 
         os.environ['SDL_WINDOWID'] = str(embed.winfo_id())
         os.environ['SDL_VIDEODRIVER'] = 'windib'
@@ -28,7 +28,6 @@ class EditorWindow:
         self.window.fill(pygame.Color(0, 0, 0))
 
         pygame.display.set_caption('Level Editor Util')
-
         pygame.display.init()
 
         self.display()

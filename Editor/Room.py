@@ -44,5 +44,6 @@ class Room(object):
         }
 
     def save(self):
+        print(f'{self.Serialize()}')
         with codecs.open(self.file, encoding="utf-8-sig", mode="w+") as f:
             json.dump(self.Serialize(), f, indent=4)
