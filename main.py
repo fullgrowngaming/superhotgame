@@ -22,7 +22,7 @@ def update():
     window.display()
     clock.tick(60)
     #print(player.attack_anim_timer, player.walking, player.direction, player.defending, player.attacking)
-    print(f'Camera X,Y: {camera.rect.x},{camera.rect.y} | X,Y: {player.rect.x},{player.rect.y}')
+    print(f'Camera X,Y: {camera.rect.x},{camera.rect.y} | X,Y: {player.rect.left},{player.rect.right}')
 
 
 def game_loop():
@@ -64,14 +64,14 @@ def game_loop():
             player.walking = False
             player.move(4)  # if you stop moving (i.e. not holding a direction)
 
-        if player.rect.right > win_x:
+        #handling screen boundaries - I don't have the player rect quite figured out yet, so this is spaghetti right now
+        if player.rect.left > win_x - 20:
             camera.rect.x += 1
-            player.rect.left = 0
+            player.rect.left = -20
 
-        elif player.rect.left < 0:
+        elif player.rect.right < 20:
             camera.rect.x -= 1
-            player.rect.right = win_x
-
+            player.rect.right = win_x + 20
 
         # draw sprites and update window
         renderer.all_sprites.update()
