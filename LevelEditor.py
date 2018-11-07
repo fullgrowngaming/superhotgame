@@ -26,9 +26,7 @@ def game_loop():
         #handle quit
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                viewModel.loadedRoom.save()
                 pygame.quit()
-                sys.exit()
 
         mouse = pygame.mouse.get_pos()
         mouse_x = mouse[0]

@@ -9,6 +9,9 @@ class TilePalette(tk.Frame):
         super(TilePalette, self).__init__(root, kwargs)
         self.vm = vm
 
+        self.preview = tk.Canvas(self, height=100)
+        self.preview.pack(side=TOP, expand=True, fill=Y)
+
         self.canvas = tk.Canvas(self, scrollregion=(0, 0, 30, 600))
         hbar = tk.Scrollbar(self, orient=HORIZONTAL)
         hbar.pack(side=BOTTOM, fill=X)
@@ -26,8 +29,12 @@ class TilePalette(tk.Frame):
         self.tile_height = None
         self.tile_width = None
 
+        self.tkTiles = []
         self.tileBrushes = []
+
+        self.tkPreview = None
         self.selected = None
+        self.selectedPreview = None
         self.padding = 5
 
     def click(self, event):
@@ -36,7 +43,7 @@ class TilePalette(tk.Frame):
         y = self.canvas.canvasy(y)
 
         index = self.GetClickedSpriteIndex(x, y)
-        print(f'{index}')
+
         self.vm.currentBrush = index
 
     def GetClickedSpriteIndex(self, x, y):
@@ -60,45 +67,61 @@ class TilePalette(tk.Frame):
         self.selected = self.canvas.create_rectangle(rectx, recty, rectx +
                                            self.tile_width,
                                      recty + self.tile_height, outline='red')
+
+        if self.selectedPreview is not None:
+            self.preview.delete(self.selectedPreview)
+
+        previewImage = self.tileBrushes[int(index)]
+        previewImage = previewImage.resize((50, 50))
+        self.tkPreview = PIL.ImageTk.PhotoImage(previewImage)
+
+        self.selectedPreview = self.preview.create_image(
+            self.preview.winfo_width() / 2, self.preview.winfo_height() / 2,
+            image=self.tkPreview)
         return int(index)
 
     def ChangeSpriteSheet(self, file, tile_width, tile_height):
         self.tileBrushes.clear()
+        self.tkTiles.clear()
+
         self.tile_width = tile_width
         self.tile_height = tile_height
 
         sprite_sheet = TileTable(file, tile_width, tile_height)
 
         pilImage = PIL.Image.open(sprite_sheet.file)
-        image = PIL.ImageTk.PhotoImage(pilImage)
 
-        width, height = pilImage.size
+        image_width, image_height = pilImage.size
 
-        x = 0
-        y = 0
+        self.tile_count_x = image_width // tile_width
+        self.tile_count_y = image_height // tile_height
 
-        while y <= height:
-            while x <= width:
+        for tile_y in range(0, self.tile_count_y):
+            for tile_x in range(0,self.tile_count_x):
+                x = tile_x * tile_width
+                y = tile_y * tile_height
                 cropped = pilImage.crop((x, y, x + tile_width, y + tile_height))
-                image = PIL.ImageTk.PhotoImage(cropped)
-                self.tileBrushes.append(image)
+                self.tileBrushes.append(cropped)
 
-                x += tile_width
-            x = 0
-            y += tile_height
+        self.DrawTiles()
+        return
 
+    def DrawTiles(self):
         y = self.padding
         x = self.padding
         width = self.canvas.winfo_width()
 
         for tile in self.tileBrushes:
-            sprite = self.canvas.create_image(x, y, image=tile, anchor="nw")
-            print(f'{tile.height(), tile.width()}')
-            x += tile_width + self.padding
+            tkImage = PIL.ImageTk.PhotoImage(tile)
+            self.tkTiles.append(tkImage)
+            sprite = self.canvas.create_image(x, y, image=tkImage, anchor="nw")
+
+            x += self.tile_width + self.padding
 
             # wrap
-            if x > width:
+            if x + self.tile_width > width:
                 x = self.padding
-                y += tile_height + self.padding
+                y += self.tile_height + self.padding
 
         self.canvas.config(scrollregion=(0, 0, width, y))
+        self.canvas.update()

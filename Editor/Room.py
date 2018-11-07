@@ -13,8 +13,8 @@ class Room(object):
 
         self.layers.extend(layers)
 
-        if "file" in kwargs.items():
-            self.file = kwargs["file"]
+        if "file" in kwargs:
+            self.file = kwargs.get('file')
         return
 
     @classmethod
@@ -44,6 +44,7 @@ class Room(object):
         }
 
     def save(self):
+        print(f'saving to file {self.file}')
         print(f'{self.Serialize()}')
         with codecs.open(self.file, encoding="utf-8-sig", mode="w+") as f:
             json.dump(self.Serialize(), f, indent=4)

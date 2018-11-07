@@ -2,6 +2,7 @@ import pygame
 import os
 import tkinter as tk
 from tkinter import *
+from tkinter import messagebox
 from Editor.TilePalette import TilePalette
 
 class EditorWindow:
@@ -11,6 +12,7 @@ class EditorWindow:
     def __init__(self, window_res_x, window_res_y, viewModel):
         self.res_x = window_res_x
         self.res_y = window_res_y
+        self.viewModel = viewModel
 
         self.root = tk.Tk()
         self.tilePalette = TilePalette(self.root, viewModel, width=80)
@@ -30,7 +32,14 @@ class EditorWindow:
         pygame.display.set_caption('Level Editor Util')
         pygame.display.init()
 
+        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
+
         self.display()
+
+    def on_closing(self):
+        if messagebox.askokcancel("Save", "Do you want to save?"):
+            self.viewModel.loadedRoom.save()
+        self.root.destroy()
 
     def display(self):
         pygame.display.update()
