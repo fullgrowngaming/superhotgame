@@ -4,6 +4,8 @@ import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
 from Editor.TilePalette import TilePalette
+from Editor.LayerSelector import LayerSelector
+
 
 class EditorWindow:
     '''Creates and maintains the game window'''
@@ -15,6 +17,10 @@ class EditorWindow:
         self.viewModel = viewModel
 
         self.root = tk.Tk()
+
+        self.layerSelector = LayerSelector(self.root, viewModel, width=80)
+        self.layerSelector.pack(side=LEFT)
+
         self.tilePalette = TilePalette(self.root, viewModel, width=80)
         self.tilePalette.pack(side=RIGHT)
 
@@ -27,9 +33,12 @@ class EditorWindow:
         os.environ['SDL_VIDEODRIVER'] = 'windib'
 
         self.window = pygame.display.set_mode((window_res_x, window_res_y))
-        self.window.fill(pygame.Color(0, 0, 0))
-
         pygame.display.set_caption('Level Editor Util')
+
+        self.background = pygame.Surface(self.window.get_size())
+        self.background = self.background.convert()
+        self.background.fill((250, 250, 250))
+
         pygame.display.init()
 
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)

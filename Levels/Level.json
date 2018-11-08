@@ -23,8 +23,20 @@
                     4,
                     4,
                     4,
-                    16,
-                    17,
+                    4,
+                    4,
+                    4,
+                    4,
+                    4,
+                    4
+                ],
+                [
+                    4,
+                    4,
+                    4,
+                    4,
+                    4,
+                    4,
                     4,
                     4,
                     4,
@@ -35,18 +47,6 @@
                     4,
                     4,
                     4,
-                    24,
-                    25,
-                    4,
-                    4,
-                    4,
-                    4
-                ],
-                [
-                    4,
-                    6,
-                    7,
-                    4,
                     4,
                     4,
                     4,
@@ -56,13 +56,13 @@
                 ],
                 [
                     4,
-                    14,
-                    15,
                     4,
                     4,
-                    36,
-                    38,
-                    39,
+                    4,
+                    4,
+                    4,
+                    4,
+                    4,
                     4,
                     4
                 ],
@@ -73,10 +73,87 @@
                     4,
                     4,
                     4,
-                    46,
-                    47,
+                    4,
+                    4,
                     4,
                     4
+                ]
+            ]
+        },
+        {
+            "z-index": 1,
+            "index-map": [
+                [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ],
+                [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ],
+                [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ],
+                [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ],
+                [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ],
+                [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
                 ]
             ]
         }

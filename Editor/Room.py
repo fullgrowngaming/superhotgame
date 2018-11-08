@@ -13,6 +13,8 @@ class Room(object):
 
         self.layers.extend(layers)
 
+        print(f'Layers in room: {len(self.layers)}')
+
         if "file" in kwargs:
             self.file = kwargs.get('file')
         return

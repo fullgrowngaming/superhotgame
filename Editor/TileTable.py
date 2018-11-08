@@ -9,7 +9,7 @@ class TileTable(object):
         self.tile_height = tile_height
         self.tile_width = tile_width
 
-        image = pygame.image.load(file).convert()
+        image = pygame.image.load(file).convert_alpha()
         image_width, image_height = image.get_size()
 
         self.tile_count_x = image_width // tile_width

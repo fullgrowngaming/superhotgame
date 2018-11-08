@@ -12,7 +12,7 @@ clock = pygame.time.Clock()
 
 room1 = Room.Deserialize('Levels/level.json')
 viewModel.loadedRoom = room1
-viewModel.activeLayer = room1.layers[0]
+viewModel.topLayer = room1.layers[1]
 
 tileBrushes = []
 
@@ -38,14 +38,21 @@ def game_loop():
         mouse_down = pygame.mouse.get_pressed()
         if mouse_down[0]:
             if tile_x <= viewModel.loadedRoom.width and tile_y <= viewModel.loadedRoom.height:
-                viewModel.activeLayer.SetTile(tile_x, tile_y, viewModel.currentBrush)
+                viewModel.topLayer.SetTile(tile_x, tile_y, viewModel.currentBrush)
 
-        for x in range(0, viewModel.loadedRoom.width):
-            for y in range(0, viewModel.loadedRoom.height):
-                tile = viewModel.activeLayer.tiles[y][x]
-                xloc = x * viewModel.loadedRoom.sprite_sheet.tile_width
-                yloc = y * viewModel.loadedRoom.sprite_sheet.tile_height
-                window.window.blit(tile, (xloc, yloc))
+        window.window.blit(window.background, (0,0))
+
+        for layer in viewModel.loadedRoom.layers:
+            for x in range(0, viewModel.loadedRoom.width):
+                for y in range(0, viewModel.loadedRoom.height):
+                    tile = layer.tiles[y][x]
+
+                    if tile is None:
+                        continue
+
+                    xloc = x * viewModel.loadedRoom.sprite_sheet.tile_width
+                    yloc = y * viewModel.loadedRoom.sprite_sheet.tile_height
+                    window.window.blit(tile, (xloc, yloc))
 
         update()
 
