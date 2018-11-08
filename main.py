@@ -73,6 +73,14 @@ def game_loop():
             camera.rect.x -= 1
             player.rect.right = win_x + 20
 
+        elif player.rect.top > win_y - 20:
+            camera.rect.y += 1
+            player.rect.top = - 20
+
+        elif player.rect.bottom < 20:
+            camera.rect.y -= 1
+            player.rect.bottom = win_y + 20
+
         # draw sprites and update window
         renderer.all_sprites.update()
         renderer.draw()
