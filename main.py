@@ -4,38 +4,37 @@ from Player import *
 from Editor.Room import Room
 from Renderer import Renderer
 from Camera import Camera
-
 import json
-
 pygame.init()
-win_x, win_y = 240, 135
-window = GameWindow(win_x, win_y)
+
+WIN_X, WIN_Y = 240, 135
+
+#OBJECTS
+window = GameWindow(WIN_X, WIN_Y)
+camera = Camera(WIN_X, WIN_Y)
 player = Player(50,50)
 effect = Effect(player)
 clock = pygame.time.Clock()
 room1 = Room('Levels/level.json')
-renderer = Renderer(window)
+renderer = Renderer(camera, window)
+
 renderer.all_sprites.add(player, player.sword, player.shield, effect)
-camera = Camera(win_x, win_y)
 
 def update():
     window.display()
     clock.tick(60)
-    #print(player.attack_anim_timer, player.walking, player.direction, player.defending, player.attacking)
-    print(f'Camera X,Y: {camera.rect.x},{camera.rect.y} | X,Y: {player.rect.x},{player.rect.y}')
-
+    print(f'Camera X,Y: {camera.rect.x},{camera.rect.y} | Player X,Y: {player.rect.x},{player.rect.y}')
 
 def game_loop():
     running = True
     while running:
-        window.window.fill(GameWindow.white)
-
         #handle quit
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
+        #hardcoded, fix later #to-do
         for layer in room1.layers:
             for x in range(0, 10):
                 for y in range(0, 6):
@@ -46,7 +45,7 @@ def game_loop():
                     yloc = y * room1.sprite_sheet.tile_height
                     window.window.blit(tile, (xloc, yloc))
 
-        # handles keypresses and moves the player
+        #handles keypresses and moves the player
         pressed = pygame.key.get_pressed()
         if pressed[pygame.K_SPACE] and player.attack_cooldown == 0 and not player.defending:
             player.attack()
@@ -64,22 +63,18 @@ def game_loop():
             player.walking = False
             player.move(4)  # if you stop moving (i.e. not holding a direction)
 
-        #handling screen boundaries - I don't have the player rect quite figured out yet, so this is spaghetti right now
-        if player.rect.left > win_x - 20:
+        #screen boundaries - the 20s are for handling the spaghetti hitbox #TO-DO
+        if player.rect.left > WIN_X * (camera.rect.x + 1) - 20:
             camera.rect.x += 1
-            player.rect.left = -20
 
-        elif player.rect.right < 20:
+        elif player.rect.right < 0 - (WIN_X * abs(camera.rect.x)) + 20:
             camera.rect.x -= 1
-            player.rect.right = win_x + 20
 
-        elif player.rect.top > win_y - 20:
+        elif player.rect.top > WIN_Y * (camera.rect.y + 1) - 20:
             camera.rect.y += 1
-            player.rect.top = - 20
 
-        elif player.rect.bottom < 20:
+        elif player.rect.bottom < 0 - (WIN_Y * abs(camera.rect.y)) + 20:
             camera.rect.y -= 1
-            player.rect.bottom = win_y + 20
 
         # draw sprites and update window
         renderer.all_sprites.update()
