@@ -1,6 +1,19 @@
 import pygame
+from enum import Enum
 
 test = pygame.image.load('Game/test.png')
+
+class Directions(Enum):
+    NORTH = 0
+    EAST = 1
+    SOUTH = 2
+    WEST = 3
+
+class State(Enum):
+    ATTACKING = 0
+    DEFENDING = 1
+    WALKING = 2
+    IDLE = 3
 
 class Player(pygame.sprite.Sprite):
     idle = [pygame.image.load('Game/p_idle/idle_%s.png' % direction) for direction in 'nesw']
@@ -22,22 +35,18 @@ class Player(pygame.sprite.Sprite):
 
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.image = (Player.idle[1])
+        self.image = (Player.idle[2])
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
 
         self.walk_count = 0
-        self.direction = 2
+        self.direction = Directions.SOUTH
+        self.state = State.IDLE
 
         self.attack_anim_timer = 0
         self.attack_cooldown = 0
-
         self.defend_anim_timer = 0
-
-        self.walking = False
-        self.defending = False
-        self.attacking = False
 
         self.speed = 1
 
@@ -45,85 +54,108 @@ class Player(pygame.sprite.Sprite):
         self.shield = Shield(self)
 
     def update(self):
-        if self.attack_anim_timer > 0:
-            self.attacking = True
-            self.attack_anim_timer -= 1
-            if self.direction == 0:
-                self.image = (Player.att_north[self.attack_anim_timer // 6])
-            if self.direction == 1:
-                self.image = (Player.att_east[self.attack_anim_timer // 6])
-            if self.direction == 2:
-                self.image = (Player.att_south[self.attack_anim_timer // 6])
-            if self.direction == 3:
-                self.image = (Player.att_west[self.attack_anim_timer // 6])
+        #handle attack state and animation
+        if self.state == State.ATTACKING:
+            if self.attack_anim_timer > 0:
+                self.attack_anim_timer -= 1
+                if self.direction == Directions.NORTH:
+                    self.image = (Player.att_north[self.attack_anim_timer // 6])
+                if self.direction == Directions.EAST:
+                    self.image = (Player.att_east[self.attack_anim_timer // 6])
+                if self.direction == Directions.SOUTH:
+                    self.image = (Player.att_south[self.attack_anim_timer // 6])
+                if self.direction == Directions.WEST:
+                    self.image = (Player.att_west[self.attack_anim_timer // 6])
 
-        elif self.attack_anim_timer == 0:
-            self.speed = 1
-            self.attacking = False
+            #end attack
+            else:
+                self.speed = 1
+                self.state = State.IDLE
 
+        # handle attack cooldown
         if self.attack_cooldown > 0:
             self.attack_cooldown -= 1
 
-        if self.defend_anim_timer > 0:
-            self.defend_anim_timer -= 1
-            if self.direction == 0:
-                self.image = (Player.def_north[self.defend_anim_timer // 6])
-            if self.direction == 1:
-                self.image = (Player.def_east[self.defend_anim_timer // 6])
-            if self.direction == 2:
-                self.image = (Player.def_south[self.defend_anim_timer // 6])
-            if self.direction == 3:
-                self.image = (Player.def_west[self.defend_anim_timer // 6])
+        #handle defend state and animation
+        if self.state == State.DEFENDING:
+            if self.defend_anim_timer > 0:
+                self.defend_anim_timer -= 1
+                if self.direction == Directions.NORTH:
+                    self.image = (Player.def_north[self.defend_anim_timer // 6])
+                if self.direction == Directions.EAST:
+                    self.image = (Player.def_east[self.defend_anim_timer // 6])
+                if self.direction == Directions.SOUTH:
+                    self.image = (Player.def_south[self.defend_anim_timer // 6])
+                if self.direction == Directions.WEST:
+                    self.image = (Player.def_west[self.defend_anim_timer // 6])
+
+        #handle walking state and animations
+        if self.state == State.WALKING:
+            if self.walk_count + 1 > 30:
+                self.walk_count = 0
+            if self.direction == Directions.NORTH:
+                self.image = (Player.walk_north[self.walk_count // 6])
+            if self.direction == Directions.EAST:
+                self.image = (Player.walk_east[self.walk_count // 6])
+            if self.direction == Directions.SOUTH:
+                self.image = (Player.walk_south[self.walk_count // 6])
+            if self.direction == Directions.WEST:
+                self.image = (Player.walk_west[self.walk_count // 6])
+
+        #handle idle state
+        if self.state == State.IDLE:
+            self.speed = 1
+            self.image = (Player.idle[self.direction.value])
+            self.walk_count = 0
+
+    def make_idle(self):
+        if not self.state == State.ATTACKING:
+            self.state = State.IDLE
 
     def attack(self):
-        if not self.attacking:
-            self.attacking = True
-            self.walking = False
+        if self.state != State.ATTACKING and self.attack_cooldown == 0:
+            self.state = State.ATTACKING
             self.speed = 0
             self.attack_cooldown = 30
             self.attack_anim_timer = 17
 
     def defend(self):
-        if not self.defending:
-            self.defending = True
-            self.walking = False
+        if self.state != State.ATTACKING and self.state != State.DEFENDING:
+            self.state = State.DEFENDING
             self.speed = 0
             self.defend_anim_timer = 12
 
-    def move(self, direction):
-        self.walking = True
-        self.defending = False
-        if self.walk_count + 1 >= 30:
-            self.walk_count = 0
-
-        if direction == 0:
-            self.direction = 0
+    def move_north(self):
+        if self.state != State.ATTACKING and self.state != State.DEFENDING:
+            self.state = State.WALKING
+            self.speed = 1
+            self.direction = Directions.NORTH
             self.rect.y -= self.speed
-            self.image = (Player.walk_north[self.walk_count // 6])
             self.walk_count += 1
 
-        if direction == 1:
-            self.direction = 1
+    def move_east(self):
+        if self.state != State.ATTACKING and self.state != State.DEFENDING:
+            self.state = State.WALKING
+            self.speed = 1
+            self.direction = Directions.EAST
             self.rect.x += self.speed
-            self.image = (Player.walk_east[self.walk_count // 6])
             self.walk_count += 1
 
-        if direction == 2:
-            self.direction = 2
+    def move_south(self):
+        if self.state != State.ATTACKING and self.state != State.DEFENDING:
+            self.state = State.WALKING
+            self.speed = 1
+            self.direction = Directions.SOUTH
             self.rect.y += self.speed
-            self.image = (Player.walk_south[self.walk_count // 6])
             self.walk_count += 1
 
-        if direction == 3:
-            self.direction = 3
+    def move_west(self):
+        if self.state != State.ATTACKING and self.state != State.DEFENDING:
+            self.state = State.WALKING
+            self.speed = 1
+            self.direction = Directions.WEST
             self.rect.x -= self.speed
-            self.image = (Player.walk_west[self.walk_count // 6])
             self.walk_count += 1
-
-        if direction == 4:
-            self.image = (Player.idle[self.direction])
-            self.walk_count = 0
-            self.walking = False
 
 class Sword(pygame.sprite.Sprite):
     idle = [pygame.image.load('Game/p_idle/Player_Sword_Normal_%s_Idle_0000.png' % direction) for direction in 'nesw']
@@ -155,36 +187,38 @@ class Sword(pygame.sprite.Sprite):
         self.rect.x = self.player.rect.x
         self.rect.y = self.player.rect.y
 
-        if self.player.attack_anim_timer > 0:
-            if self.player.direction == 0:
+        if self.player.state == State.ATTACKING:
+            if self.player.direction == Directions.NORTH:
                 self.image = (Sword.att_north[self.player.attack_anim_timer // 6])
-            elif self.player.direction == 1:
+            elif self.player.direction == Directions.EAST:
                 self.image = (Sword.att_east[self.player.attack_anim_timer // 6])
-            elif self.player.direction == 2:
+            elif self.player.direction == Directions.SOUTH:
                 self.image = (Sword.att_south[self.player.attack_anim_timer // 6])
-            elif self.player.direction == 3:
+            elif self.player.direction == Directions.WEST:
                 self.image = (Sword.att_west[self.player.attack_anim_timer // 6])
 
-        elif self.player.walking == False:
-            self.image = Sword.idle[self.player.direction]
-        elif self.player.direction == 0:
-            self.image = (Sword.walk_north[self.player.walk_count // 6])
-        elif self.player.direction == 1:
-            self.image = (Sword.walk_east[self.player.walk_count // 6])
-        elif self.player.direction == 2:
-            self.image = (Sword.walk_south[self.player.walk_count // 6])
-        elif self.player.direction == 3:
-            self.image = (Sword.walk_west[self.player.walk_count // 6])
+        elif self.player.state == State.WALKING:
+            if self.player.direction == Directions.NORTH:
+                self.image = (Sword.walk_north[self.player.walk_count // 6])
+            elif self.player.direction == Directions.EAST:
+                self.image = (Sword.walk_east[self.player.walk_count // 6])
+            elif self.player.direction == Directions.SOUTH:
+                self.image = (Sword.walk_south[self.player.walk_count // 6])
+            elif self.player.direction == Directions.WEST:
+                self.image = (Sword.walk_west[self.player.walk_count // 6])
 
-        if self.player.defending:
-            if self.player.direction == 0:
+        elif self.player.state == State.DEFENDING:
+            if self.player.direction == Directions.NORTH:
                 self.image = (Sword.def_north[self.player.defend_anim_timer // 6])
-            elif self.player.direction == 1:
+            elif self.player.direction == Directions.EAST:
                 self.image = (Sword.def_east[self.player.defend_anim_timer // 6])
-            elif self.player.direction == 2:
+            elif self.player.direction == Directions.SOUTH:
                 self.image = (Sword.def_south[self.player.defend_anim_timer // 6])
-            elif self.player.direction == 3:
+            elif self.player.direction == Directions.WEST:
                 self.image = (Sword.def_west[self.player.defend_anim_timer // 6])
+
+        elif self.player.state == State.IDLE:
+            self.image = Sword.idle[self.player.direction.value]
 
 
 class Shield(pygame.sprite.Sprite):
@@ -217,36 +251,38 @@ class Shield(pygame.sprite.Sprite):
         self.rect.x = self.player.rect.x
         self.rect.y = self.player.rect.y
 
-        if self.player.attack_anim_timer > 0:
-            if self.player.direction == 0:
+        if self.player.state == State.ATTACKING:
+            if self.player.direction == Directions.NORTH:
                 self.image = (Shield.att_north[self.player.attack_anim_timer // 6])
-            elif self.player.direction == 1:
+            elif self.player.direction == Directions.EAST:
                 self.image = (Shield.att_east[self.player.attack_anim_timer // 6])
-            elif self.player.direction == 2:
+            elif self.player.direction == Directions.SOUTH:
                 self.image = (Shield.att_south[self.player.attack_anim_timer // 6])
-            elif self.player.direction == 3:
+            elif self.player.direction == Directions.WEST:
                 self.image = (Shield.att_west[self.player.attack_anim_timer // 6])
 
-        elif self.player.walking == False:
-            self.image = Shield.idle[self.player.direction]
-        elif self.player.direction == 0:
-            self.image = (Shield.walk_north[self.player.walk_count // 6])
-        elif self.player.direction == 1:
-            self.image = (Shield.walk_east[self.player.walk_count // 6])
-        elif self.player.direction == 2:
-            self.image = (Shield.walk_south[self.player.walk_count // 6])
-        elif self.player.direction == 3:
-            self.image = (Shield.walk_west[self.player.walk_count // 6])
+        elif self.player.state == State.WALKING:
+            if self.player.direction == Directions.NORTH:
+                self.image = (Shield.walk_north[self.player.walk_count // 6])
+            elif self.player.direction == Directions.EAST:
+                self.image = (Shield.walk_east[self.player.walk_count // 6])
+            elif self.player.direction == Directions.SOUTH:
+                 self.image = (Shield.walk_south[self.player.walk_count // 6])
+            elif self.player.direction == Directions.WEST:
+                self.image = (Shield.walk_west[self.player.walk_count // 6])
 
-        if self.player.defending:
-            if self.player.direction == 0:
+        elif self.player.state == State.DEFENDING:
+            if self.player.direction == Directions.NORTH:
                 self.image = (Shield.def_north[self.player.defend_anim_timer // 6])
-            elif self.player.direction == 1:
+            elif self.player.direction == Directions.EAST:
                 self.image = (Shield.def_east[self.player.defend_anim_timer // 6])
-            elif self.player.direction == 2:
+            elif self.player.direction == Directions.SOUTH:
                 self.image = (Shield.def_south[self.player.defend_anim_timer // 6])
-            elif self.player.direction == 3:
+            elif self.player.direction == Directions.WEST:
                 self.image = (Shield.def_west[self.player.defend_anim_timer // 6])
+
+        elif self.player.state == State.IDLE:
+            self.image = Shield.idle[self.player.direction.value]
 
 
 class Effect(pygame.sprite.Sprite):
@@ -267,14 +303,14 @@ class Effect(pygame.sprite.Sprite):
         self.rect.x = self.player.rect.x
         self.rect.y = self.player.rect.y
 
-        if self.player.attack_anim_timer > 0:
-            if self.player.direction == 0:
+        if self.player.state == State.ATTACKING:
+            if self.player.direction == Directions.NORTH:
                 self.image = (Effect.att_north[self.player.attack_anim_timer // 6])
-            elif self.player.direction == 1:
+            elif self.player.direction == Directions.EAST:
                 self.image = (Effect.att_east[self.player.attack_anim_timer // 6])
-            elif self.player.direction == 2:
+            elif self.player.direction == Directions.SOUTH:
                 self.image = (Effect.att_south[self.player.attack_anim_timer // 6])
-            elif self.player.direction == 3:
+            elif self.player.direction == Directions.WEST:
                 self.image = (Effect.att_west[self.player.attack_anim_timer // 6])
         else:
             self.image = test

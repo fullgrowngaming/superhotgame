@@ -23,7 +23,8 @@ renderer.all_sprites.add(player, player.sword, player.shield, effect)
 def update():
     window.display()
     clock.tick(60)
-    print(f'Camera X,Y: {camera.rect.x},{camera.rect.y} | Player X,Y: {player.rect.x},{player.rect.y}')
+    print(f'Camera X,Y: {camera.rect.x},{camera.rect.y} | Player X,Y: {player.rect.x},{player.rect.y}'
+          f' State: {player.state}, Speed: {player.speed}, Attack Cooldown: {player.attack_anim_timer}')
 
 def game_loop():
     running = True
@@ -47,21 +48,20 @@ def game_loop():
 
         #handles keypresses and moves the player
         pressed = pygame.key.get_pressed()
-        if pressed[pygame.K_SPACE] and player.attack_cooldown == 0 and not player.defending:
+        if pressed[pygame.K_SPACE]:
             player.attack()
-        if pressed[pygame.K_LSHIFT] and not player.attacking:
+        elif pressed[pygame.K_LSHIFT]:
             player.defend()
         elif pressed[pygame.K_LEFT]:
-            player.move(3)
+            player.move_west()
         elif pressed[pygame.K_RIGHT]:
-            player.move(1)
+            player.move_east()
         elif pressed[pygame.K_UP]:
-            player.move(0)
+            player.move_north()
         elif pressed[pygame.K_DOWN]:
-            player.move(2)
+            player.move_south()
         else:
-            player.walking = False
-            player.move(4)  # if you stop moving (i.e. not holding a direction)
+            player.make_idle()
 
         #screen boundaries - the 20s are for handling the spaghetti hitbox #TO-DO
         if player.rect.left > WIN_X * (camera.rect.x + 1) - 20:
@@ -80,7 +80,6 @@ def game_loop():
         renderer.all_sprites.update()
         renderer.draw()
         update()
-
 
 if __name__ == "__main__":
     game_loop()
