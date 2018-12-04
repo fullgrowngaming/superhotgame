@@ -24,7 +24,7 @@ def update():
     window.display()
     clock.tick(60)
     print(f'Camera X,Y: {camera.rect.x},{camera.rect.y} | Player X,Y: {player.rect.x},{player.rect.y}'
-          f' State: {player.state}, Speed: {player.speed}, Attack Cooldown: {player.attack_anim_timer}')
+          f' State: {player.state}, Speed: {player.speed}, Attack Cooldown: {player.anim_timer}')
 
 def game_loop():
     running = True
