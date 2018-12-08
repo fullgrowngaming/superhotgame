@@ -14,6 +14,7 @@ class State(Enum):
     DEFENDING = 1
     WALKING = 2
     IDLE = 3
+    WALL_COLLIDE = 4
 
 class Player(pygame.sprite.Sprite):
     idle = [pygame.image.load('Game/p_idle/idle_%s.png' % direction) for direction in 'nesw']
@@ -43,6 +44,9 @@ class Player(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image = (Player.idle[2])
         self.rect = self.image.get_rect()
+        self.collision = pygame.image.load('Game/p_collision.png')
+        self.mask = pygame.mask.from_surface(self.collision)
+
         self.rect.x = x
         self.rect.y = y
 
@@ -55,6 +59,10 @@ class Player(pygame.sprite.Sprite):
 
         self.sword = Sword(self)
         self.shield = Shield(self)
+
+        self.attfx = pygame.mixer.Sound('Game/attfx.ogg')
+
+        self.wall = False
 
     def update(self):
         #handle attack state and animation
@@ -99,6 +107,7 @@ class Player(pygame.sprite.Sprite):
             self.speed = 0
             self.attack_cooldown = 30
             self.anim_timer = 17
+            self.attfx.play()
 
     def defend(self):
         if self.state != State.ATTACKING and self.state != State.DEFENDING:
@@ -106,10 +115,19 @@ class Player(pygame.sprite.Sprite):
             self.speed = 0
             self.anim_timer = 12
 
+    def null_move(self):
+        if self.direction == Directions.NORTH:
+            self.rect.y -= -self.speed
+        elif self.direction == Directions.EAST:
+            self.rect.x += -self.speed
+        elif self.direction == Directions.SOUTH:
+            self.rect.y += -self.speed
+        elif self.direction == Directions.WEST:
+            self.rect.x -= -self.speed
+
     def move_north(self):
         if self.state != State.ATTACKING and self.state != State.DEFENDING:
             self.state = State.WALKING
-            self.speed = 1
             self.direction = Directions.NORTH
             self.rect.y -= self.speed
             self.anim_timer += 1
@@ -117,7 +135,6 @@ class Player(pygame.sprite.Sprite):
     def move_east(self):
         if self.state != State.ATTACKING and self.state != State.DEFENDING:
             self.state = State.WALKING
-            self.speed = 1
             self.direction = Directions.EAST
             self.rect.x += self.speed
             self.anim_timer += 1
@@ -125,7 +142,6 @@ class Player(pygame.sprite.Sprite):
     def move_south(self):
         if self.state != State.ATTACKING and self.state != State.DEFENDING:
             self.state = State.WALKING
-            self.speed = 1
             self.direction = Directions.SOUTH
             self.rect.y += self.speed
             self.anim_timer += 1
@@ -133,7 +149,6 @@ class Player(pygame.sprite.Sprite):
     def move_west(self):
         if self.state != State.ATTACKING and self.state != State.DEFENDING:
             self.state = State.WALKING
-            self.speed = 1
             self.direction = Directions.WEST
             self.rect.x -= self.speed
             self.anim_timer += 1
